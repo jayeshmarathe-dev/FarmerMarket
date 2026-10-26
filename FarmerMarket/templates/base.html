@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block styles %}{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Farmer Market{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container" style="margin-top:12px;">
+      <div class="premium-nav">
+        <div class="brand"><a href="{{ url_for('index') }}" class="btn" style="background:transparent;color:var(--text);padding:6px 8px;border-radius:8px;font-weight:700;"><span class="krushi-red">Krushi</span><span style="color:var(--accent);">Bandhan</span></a></div>
+        <div class="nav-actions" style="display:flex;align-items:center;gap:8px;">
+          <a href="{{ url_for('index') }}" class="small text-muted">{{ t('Home') }}</a>
+          <a href="{{ url_for('products') }}" class="small text-muted">{{ t('Products') }}</a>
+          <a href="{{ url_for('view_cart') }}" class="small text-muted">Cart ({{ cart_count }})</a>
+          <button id="themeToggle" class="theme-toggle"><span class="dot"></span><span class="small">Dark</span></button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">🌾 Farmer Market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if session.username %}
+                        <li class="nav-item"><span class="nav-link">Hi, {{ session.username }} ({{ session.role }})</span></li>
+                        {% if session.role == 'farmer' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('farmer_dashboard') }}">{{ t('Dashboard') }}</a></li>
+                        {% elif session.role == 'user' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('user_profile') }}">{{ t('Profile') }}</a></li>
+                        {% elif session.role == 'admin' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}">{{ t('Admin') }}</a></li>
+                        {% endif %}
+                        {% if session.owner %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('owner_dashboard') }}">Owner</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">{{ t('Logout') }}</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">{{ t('Login') }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register_user') }}">{{ t('Register User') }}</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register_farmer') }}">{{ t('Register Farmer') }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+(function(){
+  // theme toggle
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  const stored = localStorage.getItem('theme');
+  if(stored === 'dark'){
+    document.documentElement.setAttribute('data-theme', 'dark');
+    toggle.querySelector('.small').textContent = 'Light';
+  }
+  toggle.addEventListener('click', function(){
+    const cur = document.documentElement.getAttribute('data-theme');
+    if(cur === 'dark'){
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme','light');
+      toggle.querySelector('.small').textContent = 'Dark';
+    } else {
+      document.documentElement.setAttribute('data-theme','dark');
+      localStorage.setItem('theme','dark');
+      toggle.querySelector('.small').textContent = 'Light';
+    }
+  });
+
+  // reveal animated cards when in viewport
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.animated-card').forEach(el => obs.observe(el));
+  });
+})();
+</script>
+
+    <footer class="site-footer mt-4">
+      <div class="container">
+        <div class="footer-glass p-4">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="footer-title">KrushiBandhan</div>
+              <p class="text-muted mb-2">{{ t('Fresh produce directly from farmers') }}</p>
+              <a href="{{ url_for('products') }}" class="btn btn-success">{{ t('Browse Products') }}</a>
+              
+            </div>
+            <div class="col-md-2">
+              <div class="footer-title">Quick Links</div>
+              <div class="footer-links">
+                <a href="{{ url_for('index') }}">{{ t('Home') }}</a>
+                <a href="{{ url_for('products') }}">{{ t('Products') }}</a>
+                {% if not session.username %}
+                <a href="{{ url_for('login') }}">{{ t('Login') }}</a>
+                <a href="{{ url_for('register_farmer') }}">{{ t('Register Farmer') }}</a>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="footer-title">Contact</div>
+              <div class="text-muted small">support@krushibandhan.example</div>
+              <div class="text-muted small">+91 87678 94496</div>
+              <div class="text-muted small">Pune, Maharashtra</div>
+            </div>
+            <div class="col-md-3">
+              <div class="footer-title">Follow Us</div>
+              <div class="social-links d-flex gap-2">
+                <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="footer-bottom d-flex justify-content-between align-items-center">
+            <div class="small text-muted">© {{ (now() if false) }} KrushiBandhan</div>
+            <div class="footer-links small">
+              <a href="#">Privacy</a>
+              <a href="#">Terms</a>
+              <a href="#">Support</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+
+</body>
+</html>

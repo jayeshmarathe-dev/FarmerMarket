@@ -1,0 +1,58 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}My Products{% endblock %}
+{% block content %}
+<h1>My Products & Orders</h1>
+<a href="{{ url_for('add_product') }}" class="btn btn-primary mb-3">Add Product</a>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            {% if product.image %}
+                <img src="{{ url_for('static', filename=(product.image|replace('\\','/')|replace('static/',''))) }}" class="card-img-top" alt="{{ product.name }}" style="height: 150px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5>{{ product.name }}</h5>
+                <p>{{ product.description[:50] }}...</p>
+                <p class="text-success">₹{{ "%.2f"|format(product.price) }}</p>
+                <div class="mb-2">
+                    <strong>Orders:</strong>
+                    {% if product.orders %}
+                        <ul class="list-unstyled small">
+                            {% for order in product.orders %}
+                            <li>
+                                User: {{ order.username }} (ID: {{ order.user_id }}) - Qty: {{ order.quantity }} - {{ order.status }}
+                                {% if order.distance_km %}
+                                  | Distance: {{ '%.2f'|format(order.distance_km) }} KM
+                                {% endif %}
+                                {% if order.delivery_mode %}
+                                  | Mode: {{ 'Free Delivery Available' if order.delivery_mode=='free_delivery' else 'Pickup Required' }}
+                                {% endif %}
+                                {% if order.customer_lat and order.customer_lng %}
+                                  <div class="mt-2">
+                                    <iframe width="100%" height="180" style="border:0;border-radius:10px" loading="lazy" allowfullscreen
+                                            src="https://www.google.com/maps?q={{ order.customer_lat }},{{ order.customer_lng }}&z=15&output=embed"></iframe>
+                                    <a class="btn btn-sm btn-outline-success mt-2" target="_blank"
+                                       href="https://www.google.com/maps/dir/?api=1&origin={{ product.f_lat }},{{ product.f_lng }}&destination={{ order.customer_lat }},{{ order.customer_lng }}">Open Route in Google Maps</a>
+                                  </div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="text-muted">No orders yet</span>
+                    {% endif %}
+                </div>
+                <div class="btn-group w-100">
+                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete?')">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

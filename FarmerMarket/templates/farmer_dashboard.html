@@ -1,0 +1,17 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Farmer Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, Farmer {{ session.username }}!</h1>
+<div class="row">
+    <div class="col-md-6">
+        <a href="{{ url_for('farmer_products') }}" class="btn btn-success btn-lg w-100 mb-3">Manage Products & Orders</a>
+    </div>
+    <div class="col-md-6">
+        <a href="{{ url_for('add_product') }}" class="btn btn-primary btn-lg w-100 mb-3">Add New Product</a>
+    </div>
+</div>
+{% endblock %}

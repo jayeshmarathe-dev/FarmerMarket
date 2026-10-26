@@ -1,0 +1,155 @@
+
+{% extends 'base.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/premium-owner.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<div style="display:flex;gap:20px;align-items:flex-start;">
+  <!-- SIDEBAR -->
+  <aside style="width:260px;">
+    <div class="card" style="padding:12px;">
+      <h3>Owner Menu</h3>
+      <a href="{{ url_for('owner_dashboard') }}" class="menu-item">Dashboard</a>
+      <a href="{{ url_for('owner_dashboard') }}" class="menu-item">Users ({{ users|length }})</a>
+      <a href="{{ url_for('owner_dashboard') }}" class="menu-item">Farmers ({{ farmers|length }})</a>
+      <a href="{{ url_for('owner_dashboard') }}" class="menu-item">Products ({{ products|length }})</a>
+      <form method="post" action="{{ url_for('owner_delete_user', uid=0) }}" onsubmit="return false;">
+        <!-- placeholder to show management area below -->
+      </form>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main style="flex:1;">
+    <h2>Owner Dashboard (Full Admin)</h2>
+
+    <div class="owner-grid">
+      <div class="owner-card">
+        <h4>Total Users</h4>
+        <p style="font-size:20px">{{ users|length }}</p>
+      </div>
+      <div class="owner-card">
+        <h4>Total Farmers</h4>
+        <p style="font-size:20px">{{ farmers|length }}</p>
+      </div>
+      <div class="owner-card">
+        <h4>Total Products</h4>
+        <p style="font-size:20px">{{ products|length }}</p>
+      </div>
+    </div>
+
+    <!-- MANAGEMENT TABLES -->
+    <h3 style="margin-top:18px;">Users</h3>
+    <div class="card" style="padding:10px; overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr><th>ID</th><th>Name/Email</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for u in users %}
+          <tr>
+            <td>{{ u[0] }}</td>
+            <td>{{ u[1] }}<br><small class="text-muted">{{ u[2] }}</small></td>
+            <td>
+              <form method="post" action="{{ url_for('owner_reset_password', uid=u[0]) }}" style="display:inline;">
+                <button class="btn">Reset PW</button>
+              </form>
+              <form method="post" action="{{ url_for('owner_delete_user', uid=u[0]) }}" style="display:inline;" onsubmit="return confirm('Delete user?');">
+                <button class="btn" style="background:#ef4444">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:18px;">Farmers</h3>
+    <div class="card" style="padding:10px; overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr><th>ID</th><th>Name/Email</th><th>Approved</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for f in farmers %}
+          <tr>
+            <td>{{ f[0] }}</td>
+            <td>{{ f[1] }}<br><small class="text-muted">{{ f[2] }}</small></td>
+            <td>{{ f[5] if f|length > 5 else 'N/A' }}</td>
+            <td>
+              <form method="post" action="{{ url_for('owner_approve_farmer', fid=f[0]) }}" style="display:inline;">
+                <button class="btn">Approve</button>
+              </form>
+              <form method="post" action="{{ url_for('owner_reject_farmer', fid=f[0]) }}" style="display:inline;">
+                <button class="btn" style="background:#f59e0b">Reject</button>
+              </form>
+              <form method="post" action="{{ url_for('owner_delete_farmer', fid=f[0]) }}" style="display:inline;" onsubmit="return confirm('Delete farmer?');">
+                <button class="btn" style="background:#ef4444">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:18px;">Products</h3>
+    <div class="card" style="padding:10px; overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for p in products %}
+          <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+            <td>₹{{ p[3] if p|length>3 else '?' }}</td>
+            <td>
+              <form method="post" action="{{ url_for('owner_delete_product', pid=p[0]) }}" style="display:inline;" onsubmit="return confirm('Delete product?');">
+                <button class="btn" style="background:#ef4444">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHARTS -->
+    <h3 style="margin-top:18px;">Analytics</h3>
+    <div class="owner-grid">
+      <div class="chart-box">
+        <canvas id="ordersChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <canvas id="revenueChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ordersData = {{ orders_json|safe }};
+const revenueData = {{ revenue_json|safe }};
+const monthlyLabels = {{ monthly_labels|safe }};
+const monthlyValues = {{ monthly_values|safe }};
+
+new Chart(document.getElementById('ordersChart'), {
+  type: 'bar',
+  data: { labels: ['Total Orders'], datasets:[{label:'Orders', data: [ordersData]}] }
+});
+new Chart(document.getElementById('revenueChart'), {
+  type: 'line',
+  data: { labels: ['Revenue'], datasets:[{label:'Revenue', data: [revenueData]}] }
+});
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: { labels: monthlyLabels, datasets:[{label:'Orders/Month', data: monthlyValues}] }
+});
+</script>
+{% endblock %}

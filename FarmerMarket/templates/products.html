@@ -1,0 +1,50 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h1>Products</h1>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm animated-card">
+            {% if product.image %}
+                <img src="{{ url_for('static', filename=(product.image|replace('\\','/')|replace('static/',''))) }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title mb-2">{{ product.name }}</h5>
+                <p class="card-text text-muted mb-3">{{ product.description[:100] }}...</p>
+                <p class="text-success fw-bold fs-5 mb-3">₹{{ "%.2f"|format(product.price) }} / kg</p>
+                {% if session.user_id and session.role == 'user' %}
+                    <div class="d-flex flex-column gap-2">
+                        <form method="POST" action="{{ url_for('place_order', product_id=product.id) }}" class="order-form mb-2">
+                            <input type="hidden" name="lat">
+                            <input type="hidden" name="lng">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <label class="form-label mb-0">Quantity (kg)</label>
+                                <input type="number" name="quantity" min="1" value="1" class="form-control order-qty" style="width:100px;" data-unit-price="{{ '%.2f'|format(product.price) }}">
+                                <div class="ms-auto small text-muted order-total">
+                                    Total Price: ₹<span class="order-total-value">{{ '%.2f'|format(product.price) }}</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">{{ t('Order Now') }}</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('cart_add', product_id=product.id) }}" class="add-cart-form">
+                            <input type="hidden" name="quantity" value="1" class="add-cart-qty">
+                            <button type="submit" class="btn btn-outline-success">Add to Cart</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if not products %}
+    <div class="text-center py-5">
+        <h3>No products available.</h3>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,61 @@
+
+{% extends 'base.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/premium-owner.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container">
+<h2>Owner Dashboard (Premium)</h2>
+
+<!-- Stats Cards -->
+<div class="owner-grid">
+  <div class="owner-card">
+    <h3>Total Users</h3>
+    <p>{{ users|length }}</p>
+  </div>
+  <div class="owner-card">
+    <h3>Total Farmers</h3>
+    <p>{{ farmers|length }}</p>
+  </div>
+  <div class="owner-card">
+    <h3>Total Products</h3>
+    <p>{{ products|length }}</p>
+  </div>
+</div>
+
+<h2 style="margin-top:30px;">Analytics</h2>
+
+<div class="owner-grid">
+  <div class="chart-box">
+    <canvas id="userChart"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="productChart"></canvas>
+  </div>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById('userChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Users','Farmers'],
+    datasets: [{ label:'Accounts', data:[{{ users|length }}, {{ farmers|length }}] }]
+  }
+});
+
+new Chart(document.getElementById('productChart'), {
+  type: 'line',
+  data: {
+    labels: ['Products'],
+    datasets: [{ label:'Total Products', data:[{{ products|length }}] }]
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}My Cart{% endblock %}
+{% block content %}
+<h1>My Cart</h1>
+{% if items %}
+<form method="POST" action="{{ url_for('cart_update') }}" class="cart-update-form">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in items %}
+        {% set p = row.product %}
+        <tr>
+          <td>
+            {% if p.image %}
+              <img src="{{ url_for('static', filename=(p.image|replace('\\','/')|replace('static/',''))) }}" width="50" class="me-2 rounded">
+            {% endif %}
+            {{ p.name }}
+          </td>
+          <td>₹{{ '%.2f'|format(p.price) }}</td>
+          <td style="max-width:120px">
+            <input type="hidden" name="product_id[]" value="{{ p.id }}">
+            <input type="number" name="quantity[]" value="{{ row.qty }}" min="1" class="form-control cart-qty" data-unit-price="{{ '%.2f'|format(p.price) }}">
+          </td>
+          <td class="line-total">₹{{ '%.2f'|format(row.line_total) }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('cart_remove', product_id=p.id) }}">
+              <button class="btn btn-sm btn-outline-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="fs-5">Grand Total: ₹<span id="cart-grand-total">{{ '%.2f'|format(total) }}</span></div>
+    <div>
+      <button class="btn btn-outline-success me-2" type="submit">Update Cart</button>
+      <form method="POST" action="{{ url_for('cart_checkout') }}" class="d-inline" id="cartCheckoutForm">
+        <input type="hidden" name="lat">
+        <input type="hidden" name="lng">
+        <button class="btn btn-success">Checkout</button>
+      </form>
+    </div>
+  </div>
+</form>
+{% else %}
+<p>Your cart is empty. <a href="{{ url_for('products') }}">Browse products</a>.</p>
+{% endif %}
+{% endblock %}

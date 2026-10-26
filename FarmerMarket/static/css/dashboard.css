@@ -1,0 +1,7 @@
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.stat-card{background:var(--card);border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.08);padding:16px}
+.chart-box{background:var(--card);border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.08);padding:12px}
+.dashboard-actions{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:768px){
+  .stat-grid{grid-template-columns:1fr}
+}

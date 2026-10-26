@@ -1,0 +1,36 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Edit Product{% endblock %}
+{% block content %}
+<h1>Edit Product</h1>
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" value="{{ product.name }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3">{{ product.description }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number" name="price" step="0.01" value="{{ product.price }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Stock</label>
+        <input type="number" name="stock" value="{{ product.stock }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Image (leave empty to keep current)</label>
+        {% if product.image %}
+            <img src="{{ url_for('static', filename=(product.image|replace('\\','/')|replace('static/',''))) }}" class="img-thumbnail mb-2" style="max-height: 100px;">
+        {% endif %}
+        <input type="file" name="image" class="form-control" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-success">Update</button>
+    <a href="{{ url_for('farmer_products') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

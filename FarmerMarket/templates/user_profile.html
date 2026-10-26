@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+<h1>My Orders</h1>
+{% if orders %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Farmer</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>
+                    {% if order.image %}
+                        <img src="{{ url_for('static', filename=(order.image|replace('\\','/')|replace('static/',''))) }}" width="50" class="me-2">
+                    {% endif %}
+                    {{ order.product_name }}
+                </td>
+                <td>{{ order.farmer_name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                <td><span class="badge bg-{{ 'warning' if order.status=='pending' else 'info' if order.status=='shipped' else 'danger' if order.status=='cancelled' else 'success' }}">{{ order.status }}</span></td>
+                <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if order.status != 'cancelled' and order.status != 'delivered' %}
+                    <form method="POST" action="{{ url_for('cancel_order', order_id=order.id) }}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No orders yet. <a href="{{ url_for('index') }}">Browse products</a>!</p>
+{% endif %}
+{% endblock %}

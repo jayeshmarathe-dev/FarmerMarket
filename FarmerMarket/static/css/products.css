@@ -1,0 +1,8 @@
+.product-card{border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.08)}
+.card-img-top{height:200px;object-fit:cover;border-top-left-radius:14px;border-top-right-radius:14px}
+.price{font-size:1.2rem;font-weight:700;color:var(--accent)}
+.btn-group{display:flex;gap:8px}
+@media (max-width:576px){
+  .btn-group{flex-direction:column}
+  .card-img-top{height:150px}
+}

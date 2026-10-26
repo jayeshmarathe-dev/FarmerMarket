@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Home - Farmer Market{% endblock %}
+{% block content %}
+
+<div class="row align-items-center mb-4">
+  <div class="col-md-6">
+    <h1 class="mb-2">{{ t('Fresh produce directly from farmers') }}</h1>
+    <p class="text-muted mb-3">{{ t('Support line') }}</p>
+    <a href="{{ url_for('products') }}" class="btn btn-success premium">{{ t('Browse Products') }}</a>
+  </div>
+  <div class="col-md-6">
+    <img src="{{ url_for('static', filename='uploads/homeImage1.jpg') }}" alt="Farmer" class="img-fluid rounded animated-card">
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/homeimage2.jpg') }}" class="card-img-top" alt="Quality Produce" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>{{ t('Quality Produce') }}</h5>
+        <p class="text-muted">Handpicked, farm-fresh ingredients, delivered with care.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/homeimage3.jpg') }}" class="card-img-top" alt="Local Farmers" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>{{ t('Local Farmers') }}</h5>
+        <p class="text-muted">Direct connections with growers ensure fair prices.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/homeimage4.jpg') }}" class="card-img-top" alt="Seasonal Variety" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>{{ t('Seasonal Variety') }}</h5>
+        <p class="text-muted">Discover new items every season from trusted farms.</p>
+      </div>
+ </div>
+ </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/image7.jpg') }}" class="card-img-top" alt="Farm-to-Table" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>Farm-to-Table Freshness</h5>
+        <p class="text-muted">From harvest to your home with minimal handling for peak taste.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/image9.jpg') }}" class="card-img-top" alt="Certified Quality" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>Certified Quality</h5>
+        <p class="text-muted">Products checked for freshness and safety before listing.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card h-100 animated-card">
+      <img src="{{ url_for('static', filename='uploads/support10.jpg') }}" class="card-img-top" alt="Community Support" style="height:200px;object-fit:cover;">
+      <div class="card-body">
+        <h5>Community Support</h5>
+        <p class="text-muted">Buy local and uplift farming communities across your region.</p>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ 
+{% endblock %}

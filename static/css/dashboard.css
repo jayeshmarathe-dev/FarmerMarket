@@ -1,0 +1,23 @@
+/* dashboard.css - Farmer / User dashboards */
+.layout{
+  display:grid;
+  grid-template-columns: 260px 1fr;
+  gap:22px;
+  padding:20px;
+}
+.sidebar{
+  background:var(--card);
+  border-radius:12px;
+  padding:14px;
+  min-height:420px;
+}
+.content{
+  min-height:420px;
+}
+.menu-item{ padding:10px 8px; border-radius:8px; display:block; color:#111827; text-decoration:none; margin-bottom:6px; }
+.menu-item:hover{ background:#f3f4f6; }
+.stat{
+  background:linear-gradient(180deg,#fff,#fbfbff);
+  padding:12px; border-radius:10px; box-shadow:0 6px 14px rgba(10,10,30,0.04);
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
+}

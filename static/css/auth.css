@@ -1,0 +1,19 @@
+/* auth.css - Login / Register / auth pages */
+.auth-wrap{
+  max-width:420px;
+  margin:28px auto;
+  padding:26px;
+}
+.form-card{
+  padding:22px;
+}
+.form-group{ margin-bottom:14px; }
+.form-group label{ display:block; margin-bottom:6px; font-weight:600; color:#374151 }
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"]{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb;
+  background:#fff; outline:none; transition:box-shadow .12s ease;
+}
+.form-group input:focus{ box-shadow:0 4px 18px rgba(0,0,0,0.06); border-color: #d1d5db }
+.form-note{ font-size:0.9rem; color:#6b7280; margin-top:6px; }

@@ -1,0 +1,33 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products.css') }}">
+{% endblock %}
+
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+<h1>Add New Product</h1>
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number" name="price" step="0.01" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Stock</label>
+        <input type="number" name="stock" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Image</label>
+        <input type="file" name="image" class="form-control" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-success">Add Product</button>
+    <a href="{{ url_for('farmer_products') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
